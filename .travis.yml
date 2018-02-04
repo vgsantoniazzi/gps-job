@@ -4,7 +4,7 @@ rvm:
   - 2.5.0
 
 script:
-  - bin/test
+  - rake test
 
 notifications:
   email: false
