@@ -1,0 +1,10 @@
+language: ruby
+
+rvm:
+  - 2.5.0
+
+script:
+  - bin/test
+
+notifications:
+  email: false
