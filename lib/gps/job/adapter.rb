@@ -14,3 +14,4 @@ module Gps
 end
 
 ActiveJob::QueueAdapters::GoogleCloudPubsubAdapter = Gps::Job::Adapter
+ActiveJob::QueueAdapters.autoload :GoogleCloudPubsubAdapter, 'gps/job/adapter'
