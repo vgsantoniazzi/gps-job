@@ -18,6 +18,17 @@ module Gps
       yield(configuration)
     end
 
+    def self.topic
+      pubsub.topic(configuration.queue)
+    end
+
+    def self.pubsub
+      Google::Cloud.new(
+        Gps::Job.configuration.project_id,
+        Gps::Job.configuration.credentials
+      ).pubsub
+    end
+
     autoload :Configuration, 'gps/job/configuration'
     autoload :Worker, 'gps/job/worker'
     autoload :Adapter, 'gps/job/adapter'
