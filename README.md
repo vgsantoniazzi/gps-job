@@ -16,6 +16,12 @@ require 'gps/job/adapter'
 Rails.application.config.active_job.queue_adapter = :google_cloud_pubsub
 ```
 
+Start the worker
+
+``` sh
+$ rake gps:worker
+```
+
 Write the Job class and code to use it.
 
 ``` ruby

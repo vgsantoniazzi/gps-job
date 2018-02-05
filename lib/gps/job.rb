@@ -2,6 +2,7 @@
 
 require 'rails'
 require 'google/cloud/pubsub'
+require 'gps/job/railtie'
 
 module Gps
   module Job
