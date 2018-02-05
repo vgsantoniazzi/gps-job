@@ -11,7 +11,9 @@ gem 'gps-job'
 First, change the ActiveJob backend.
 
 ``` ruby
-Rails.application.config.active_job.queue_adapter = :google_pubsub
+require 'gps/job/adapter'
+
+Rails.application.config.active_job.queue_adapter = :google_cloud_pubsub
 ```
 
 Write the Job class and code to use it.

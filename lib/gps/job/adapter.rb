@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
-module Gps
-  module Job
-    class Adapter
-      def self.enqueue(job)
-        Gps::Job.configuration.logger.info "Enqueued job #{job.inspect}"
-        book  = job.arguments.first
-        topic = pubsub.topic 'lookup_book_details_queue'
-        topic.publish book.id.to_s
+module ActiveJob
+  module QueueAdapters
+    class GoogleCloudPubsubAdapter
+      def enqueue(job)
+        Gps::Job.configuration.logger.info "Google Pub/Sub Enqueued job #{job.inspect}"
+        Gps::Job.topic.publish job.to_json
       end
     end
   end
 end
-
-ActiveJob::QueueAdapters::GoogleCloudPubsubAdapter = Gps::Job::Adapter
-ActiveJob::QueueAdapters.autoload :GoogleCloudPubsubAdapter, 'gps/job/adapter'
