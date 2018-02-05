@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
-  s.add_dependency 'gcloud',            '~> 0.0.7'
-  s.add_dependency 'google-api-client', '~> 0.19.5'
-  s.add_dependency 'rails',             '~> 5.1.4'
+  s.add_dependency 'google-api-client',   '~> 0.19.5'
+  s.add_dependency 'rails',               '~> 5.1.4'
+  s.add_dependency 'google-cloud-pubsub', '~> 0.21.0'
 end

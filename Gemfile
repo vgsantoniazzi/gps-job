@@ -6,4 +6,5 @@ gemspec
 
 group :development do
   gem 'rubocop', '0.52.1'
+  gem 'pry-byebug'
 end
