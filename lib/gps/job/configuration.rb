@@ -2,30 +2,17 @@
 
 module Gps
   module Job
-    class << self
-      attr_writer :configuration
-
-      def configuration
-        @configuration ||= Gps::Job::Configuration.new
-      end
-    end
-
-    def self.configure
-      self.configuration ||= Gps::Job::Configuration.new
-      yield(configuration)
-    end
-
     class Configuration
-      attr_accessor :retries, :logger, :queue, :max_threads, :min_threads,
-                    :retry_every
+      attr_accessor :retries, :logger, :queue, :retry_every, :project_id,
+                    :credentials
 
       def initialize
         @retries = 3
         @retry_every = 2.minutes
         @logger = Logger.new(STDOUT)
         @queue = :default
-        @max_threads = 1
-        @min_threads = 1
+        @project_id = :default
+        @credentials = '~/.google/keyfile.json'
       end
     end
   end
