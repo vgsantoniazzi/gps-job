@@ -20,7 +20,7 @@ module Gps
     end
 
     def self.topic
-      pubsub.topic(configuration.queue)
+      pubsub.topic(configuration.queue) || pubsub.create_topic(configuration.queue)
     end
 
     def self.pubsub
