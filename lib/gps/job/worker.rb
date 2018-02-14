@@ -10,8 +10,8 @@ module Gps
       end
 
       def self.subscribe_to_active_support_instrumentation!
-        ActiveSupport::Notifications.subscribe(Gps::Job.configuration.event_name) do
-          |name, started, finished, unique_id, data|
+        ActiveSupport::Notifications.subscribe(Gps::Job.configuration.event_name) do |_name, started, finished, _unique_id, data|
+          Gps::Job.configuration.logger.info "Finished job: #{data}"
           Gps::Job.configuration.metrics[:total_duration] += (finished - started)
           Gps::Job.configuration.metrics[:total_count] += 1
         end
@@ -19,7 +19,7 @@ module Gps
 
       def self.subscribe_to_google_pub_sub!
         subscription.listen(autoack: true) do |message|
-          Gps::Job.configuration.logger.info(message.inspect)
+          Gps::Job.configuration.logger.info "Started Job: #{message.data}"
           perform_job(message.data)
         end
       end
@@ -33,7 +33,7 @@ module Gps
 
       def self.subscription
         Gps::Job.topic.subscription(Gps::Job.configuration.queue) ||
-        Gps::Job.topic.subscribe(Gps::Job.configuration.queue)
+          Gps::Job.topic.subscribe(Gps::Job.configuration.queue)
       end
     end
   end
