@@ -5,9 +5,28 @@ module Gps
     class Worker
       def self.run_worker!
         Gps::Job.configuration.logger.info 'Google Pub/Sub Worker running.'
+        subscribe_to_active_support_instrumentation!
+        subscribe_to_google_pub_sub!
+      end
+
+      def self.subscribe_to_active_support_instrumentation!
+        ActiveSupport::Notifications.subscribe(Gps::Job.configuration.event_name) do
+          |name, started, finished, unique_id, data|
+          Gps::Job.configuration.metrics[:total_duration] += (finished - started)
+          Gps::Job.configuration.metrics[:total_count] += 1
+        end
+      end
+
+      def self.subscribe_to_google_pub_sub!
         subscription.listen(autoack: true) do |message|
           Gps::Job.configuration.logger.info(message.inspect)
-          data = JSON.parse(message.data)
+          perform_job(message.data)
+        end
+      end
+
+      def self.perform_job(data)
+        data = JSON.parse(data)
+        ActiveSupport::Notifications.instrument(Gps::Job.configuration.event_name, data) do
           data.fetch('class_name').constantize.perform_now(*data.fetch('args'))
         end
       end
