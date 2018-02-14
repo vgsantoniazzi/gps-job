@@ -12,8 +12,8 @@ module Gps
       def self.subscribe_to_active_support_instrumentation!
         ActiveSupport::Notifications.subscribe(Gps::Job.configuration.event_name) do |_name, started, finished, _unique_id, data|
           Gps::Job.configuration.logger.info "Finished job: #{data}"
-          Gps::Job.configuration.metrics[:total_duration] += (finished - started)
-          Gps::Job.configuration.metrics[:total_count] += 1
+          Gps::Job.metrics.total_duration += (finished - started)
+          Gps::Job.metrics.total_count += 1
         end
       end
 

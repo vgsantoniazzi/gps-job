@@ -7,10 +7,14 @@ require 'gps/job/railtie'
 module Gps
   module Job
     class << self
-      attr_writer :configuration
+      attr_writer :configuration, :metrics
 
       def configuration
         @configuration ||= Configuration.new
+      end
+
+      def metrics
+        @metrics ||= Metrics.new
       end
     end
 
@@ -31,6 +35,7 @@ module Gps
     end
 
     autoload :Configuration, 'gps/job/configuration'
+    autoload :Metrics, 'gps/job/metrics'
     autoload :Worker, 'gps/job/worker'
     autoload :Adapter, 'gps/job/adapter'
   end

@@ -3,7 +3,7 @@
 module Gps
   module Job
     class Configuration
-      attr_accessor :logger, :queue, :project_id, :credentials, :event_name, :metrics
+      attr_accessor :logger, :queue, :project_id, :credentials, :event_name
 
       def initialize
         @logger = Logger.new(STDOUT)
@@ -11,7 +11,6 @@ module Gps
         @project_id = :default
         @credentials = '~/.google/keyfile.json'
         @event_name = 'perform.gps_job'
-        @metrics = { total_duration: 0, total_count: 0 }
       end
     end
   end
