@@ -3,6 +3,9 @@ language: ruby
 rvm:
   - 2.4.3
 
+ install:
+  - bin/setup
+
 script:
   - rake test
 
