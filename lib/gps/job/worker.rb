@@ -18,16 +18,23 @@ module Gps
       end
 
       def self.subscribe_to_google_pub_sub!
-        subscription.listen(autoack: true) do |message|
-          Gps::Job.configuration.logger&.info "Started Job: #{message.data}"
-          perform_job(message.data)
+        subscription.listen do |message|
+          data = JSON.parse(message.data)
+          if perform_now?(data)
+            message.acknowledge!
+            perform_job(data)
+          end
         end
       end
 
+      def self.perform_now?(data)
+        data['at'].to_i < Time.now.to_i
+      end
+
       def self.perform_job(data)
-        data = JSON.parse(data)
+        Gps::Job.configuration.logger&.info "Started Job: #{data}"
         ActiveSupport::Notifications.instrument(Gps::Job.configuration.event_name, data) do
-          data.fetch('class_name').constantize.perform_now(*data.fetch('args'))
+          data.fetch('job_class').constantize.perform_now(*data.fetch('arguments'))
         end
       end
 

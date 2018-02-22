@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 class ActiveJob::QueueAdapters::GoogleCloudPubsubAdapter::Test < Minitest::Test
@@ -9,20 +10,20 @@ class ActiveJob::QueueAdapters::GoogleCloudPubsubAdapter::Test < Minitest::Test
   end
 
   def test_enqueue
-    mock.expect(:publish, nil, [{ class_name: 'GreetingJob', args: ['victor'] }.to_json.to_s, {}])
+    mock.expect(:publish, nil, [{ job_class: 'GreetingJob', arguments: ['victor'] }.to_json.to_s])
     Gps::Job.stub(:topic, mock) do
       ActiveJob::QueueAdapters::GoogleCloudPubsubAdapter.new.enqueue(
-        Struct.new(:class, :arguments).new('GreetingJob', ['victor']), {}
+        Struct.new(:serialize).new(Struct.new(:job_class, :arguments).new('GreetingJob', ['victor'])), {}
       )
     end
     mock.verify
   end
 
   def test_enqueue_at
-    mock.expect(:publish, nil, [{ class_name: 'GreetingJob', args: ['victor'] }.to_json.to_s, {timestamp: 9999}])
+    mock.expect(:publish, nil, [{ job_class: 'GreetingJob', arguments: ['victor'] }.to_json.to_s])
     Gps::Job.stub(:topic, mock) do
       ActiveJob::QueueAdapters::GoogleCloudPubsubAdapter.new.enqueue_at(
-        Struct.new(:class, :arguments).new('GreetingJob', ['victor']), 9999
+        Struct.new(:serialize).new(Struct.new(:job_class, :arguments).new('GreetingJob', ['victor'])), 9999
       )
     end
     mock.verify

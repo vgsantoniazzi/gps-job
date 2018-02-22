@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'test_helper'
 
 class Gps::Job::Worker::Test < Minitest::Test
@@ -27,7 +28,7 @@ class Gps::Job::Worker::Test < Minitest::Test
   end
 
   def test_subscribe_to_google_pub_sub!
-    mock.expect(:listen, nil, [{autoack: true}])
+    mock.expect(:listen, nil)
     Gps::Job::Worker.stub(:subscription, mock) do
       Gps::Job::Worker.subscribe_to_google_pub_sub!
     end
@@ -35,9 +36,9 @@ class Gps::Job::Worker::Test < Minitest::Test
   end
 
   def test_perform_job
-    mock.expect(:call, nil, ["perform.gps_job", {"class_name"=>"Test", "args"=>[]}])
+    mock.expect(:call, nil, ['perform.gps_job', '{"job_class":"Test","arguments":[]}'])
     ActiveSupport::Notifications.stub(:instrument, mock) do
-      Gps::Job::Worker.perform_job({class_name: 'Test', args: []}.to_json.to_s)
+      Gps::Job::Worker.perform_job({ job_class: 'Test', arguments: [] }.to_json.to_s)
     end
     mock.verify
   end
